@@ -25,6 +25,10 @@
 #' called "tsne-Y-X.txt", containing the coordinates of each cell in the 2D
 #' t-SNE projection. "X" is the `method` argument anf "Y" is the retained number
 #' of clusters.
+#' 
+#' Note that SIMLR might no longer be available in the most recent versions of R.
+#' It is thus necessary to load the library by yourself before calling this function
+#' if you want to use it (with \code{library(SIMLR)}).
 #'
 #' @param data a data frame of n rows (genes) and m columns (cells) of read or UMI counts (note : rownames(data)=genes)
 #' @param n.cluster a number, an estimation of the ideal number of clusters is computed if equal to 0
@@ -47,14 +51,13 @@
 #' @importFrom graphics symbols
 #' @importFrom stats kmeans
 #' @importFrom stats prcomp
-#' @import SIMLR
 #' @import Rtsne
 #' @import pheatmap
 #'
 #' @examples
 #' data=matrix(runif(100000,0,1),nrow=500,ncol=200)
 #' clustering(data,n.cluster=2,method="kmeans")
-clustering = function(data,n.cluster=0,n=10,method=c("simlr","kmeans"),plot=TRUE,pdf=TRUE,write=TRUE){
+clustering = function(data,n.cluster=0,n=10,method=c("kmeans","simlr"),plot=TRUE,pdf=TRUE,write=TRUE){
   if (dir.exists("images")==FALSE & pdf==TRUE){
     dir.create("images")
   }
@@ -62,8 +65,12 @@ clustering = function(data,n.cluster=0,n=10,method=c("simlr","kmeans"),plot=TRUE
     dir.create("data")
   }
   if (n.cluster==0){
-    cat("Estimating the number of clusters",fill=TRUE)
-    c = SIMLR_Estimate_Number_of_Clusters(data, NUMC=2:n)
+    cat("Estimating the number of clusters with SIMLR",fill=TRUE)
+    if (!requireNamespace("SIMLR", quietly = TRUE)) {
+        warning("The SIMLR package must be installed to use this functionality")
+        return(NULL)
+    }
+    c = SIMLR::SIMLR_Estimate_Number_of_Clusters(data, NUMC=2:n)
     a=data.matrix(as.numeric((c$K1+c$K2)))
     rownames(a)=c(2:n)
     n.cluster = as.numeric(rownames(subset(a, a==min(a))))
@@ -73,7 +80,11 @@ clustering = function(data,n.cluster=0,n=10,method=c("simlr","kmeans"),plot=TRUE
 
   final=list()
   if (method=="simlr"){
-    s = SIMLR(data,c=n.cluster,no.dim = 2)
+    if (!requireNamespace("SIMLR", quietly = TRUE)) {
+      warning("The SIMLR package must be installed to use this functionality")
+      return(NULL)
+    }
+    s = SIMLR::SIMLR(data,c=n.cluster,no.dim = 2)
     Y = s$y
     cluster = Y$cluster
     final[[1]] = cluster
