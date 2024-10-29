@@ -1,6 +1,6 @@
 Package: SingleCellSignalR
 Title: Cell Signalling Using Single Cell RNAseq Data Analysis
-Version: 1.18.0
+Version: 1.19.0
 Authors@R: c(person("Simon", "Cabello-Aguilar", email = "simon.cabelloaguilar@gmail.com", role = c("aut")), person("Jacques", "Colinge", email = "jacques.colinge@umontpellier.fr", role = c("cre","aut")))
 Author: Simon Cabello-Aguilar Developer [aut],
         Jacques Colinge Developer [aut, cre]
