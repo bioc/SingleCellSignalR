@@ -1,0 +1,144 @@
+---
+title: "`SingleCellSignalR` : </br> Inference of ligand-receptor 
+interactions from single-cell data"
+
+author:
+  - name: Jacques Colinge
+    affiliation:
+    - Institut de Recherche en Cancérologie de Montpellier,
+     Inserm, Montpellier, France 
+    email: jacques.colinge@inserm.fr
+  - name: Jean-Philippe Villemin
+    affiliation:
+    - Institut de Recherche en Cancérologie de Montpellier,
+     Inserm, Montpellier, France 
+    email: jean-philippe.villemin@inserm.fr
+date: "`r format(Sys.Date(), '%m/%d/%Y')`"
+abstract: > 
+  <p> `SingleCellSignalR` is used to infer ligand-receptor (L-R) interactions
+   from single-cell transcriptomics or proteomics data. Potential L-R
+   interactions are taken from the  LR*db* database, which is accessed
+   through our `BulkSignalR` library.
+
+   By default, inferences rely on a statistical model linking potential
+   L-R interactions with biological pathways from Reactome or biological
+   processes from GO. This model is provided by `BulkSignalR`, which
+   we used as a basic layer to implement `SingleCellSignalR` Version 2.
+   Alternatively, the purely expression-based score
+   in Version 1 of `SingleCellSignalR`, the so-called LR-score, remains
+   available.
+   
+  <br/><br/>
+output: 
+  rmarkdown::html_vignette:
+      self_contained: true
+      toc: true
+      toc_depth: 4
+      highlight: pygments
+      fig_height: 3
+      fig_width: 3
+      fig_caption: no
+      code_folding: show
+vignette: >
+  %\VignetteIndexEntry{SingleCellSignalR-Main}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::knit_hooks$set(optipng = knitr::hook_optipng)
+options(rmarkdown.html_vignette.check_title = FALSE)
+```
+
+```{r load-libs, message = FALSE,  warning = FALSE, results = FALSE}
+library(BulkSignalR)
+library(SingleCellSignalR)
+```
+
+SingleCellSignalR package version: `r packageVersion("SingleCellSignalR")`  
+
+&nbsp;
+
+## What is it for? 
+
+`SingleCellSignalR` is a tool that enables the inference of L-R
+interactions from single-cell data.  
+
+
+See also `BulkSignalR` vignette for a more complete description
+of all functionalities.
+
+&nbsp;
+
+## Main worfklow
+
+The following code snippet give an example of 
+the main commands to use in order to process
+your dataset with `SingleCellSignalR` package.  
+
+
+```{r code1 , eval=TRUE,cache=FALSE}
+
+data(example_dataset,package='SingleCellSignalR')
+mat <- log1p(data.matrix(example_dataset[,-1]))/log(2)
+rownames(mat) <- example_dataset[[1]]
+rme <- rowMeans(mat)
+mmat <- mat[rme>0.05,]
+d <- dist(t(mmat))
+h <- hclust(d, method="ward.D")
+clusters <- paste0("pop_", cutree(h, 5))
+
+# SCSRNoNet -> LRscore based approach
+
+scsrnn <- SCSRNoNet(mat,normalize=FALSE,method="log-only",
+    min.count=1,prop=0.001,
+    log.transformed=TRUE,populations=clusters)
+
+scsrnn <- performInferences(scsrnn,verbose=TRUE,
+    min.logFC=1e-10,max.pval=1,min.LR.score=0.5)
+
+# SCSRNet -> DifferentialMode based approach
+
+scsrcn <- SCSRNet(mat,normalize=FALSE,method="log-only",
+    min.count=1,prop=0.001,
+    log.transformed=TRUE,populations=clusters)
+
+if(FALSE){
+scsrcn <- performInferences(scsrcn,
+    selected.populations = c("pop_1","pop_2","pop_3"),
+    verbose=TRUE,rank.p=0.8,
+    min.logFC=log2(1.01),max.pval=0.05)
+
+print("getAutocrines")
+inter1 <- getAutocrines(scsrcn, "pop_1")
+head(inter1)
+
+print("getParacrines")
+inter2 <- getParacrines(scsrcn, "pop_1","pop_2")
+head(inter2)
+
+# Visualisation
+
+cellNetBubblePlot(scsrcn)
+}
+
+``` 
+
+&nbsp;
+
+## Acknowledgements
+
+We thank Morgan Maillard for his help with the LRdb database and
+Pierre Giroux for the work with proteomics.
+
+&nbsp;
+
+Thank you for reading this guide and for using `SingleCellSignalR`.
+
+&nbsp;
+    
+## Session Information
+
+```{r session-info}
+sessionInfo()
+```
