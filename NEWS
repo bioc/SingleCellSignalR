@@ -1,2 +1,6 @@
-\name{NEWS}
-\title{News for Package \pkg{SingleCellSignalR}}
+SingleCellSignalR 2.0  (2024-09-17)
+==============================================
+
+* Major Code redesign : Major update based on the use of S4 
+classes from BulkSignalR.
+

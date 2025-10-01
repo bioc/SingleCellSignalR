@@ -1,36 +1,37 @@
 Package: SingleCellSignalR
-Title: Cell Signalling Using Single Cell RNAseq Data Analysis
-Version: 1.21.0
-Authors@R: c(person("Simon", "Cabello-Aguilar", email = "simon.cabelloaguilar@gmail.com", role = c("aut")), person("Jacques", "Colinge", email = "jacques.colinge@umontpellier.fr", role = c("cre","aut")))
-Author: Simon Cabello-Aguilar Developer [aut],
-        Jacques Colinge Developer [aut, cre]
-Maintainer: Jacques Colinge Developer <jacques.colinge@umontpellier.fr>
-Description: Allows single cell RNA seq data analysis, clustering, creates internal network and infers cell-cell interactions.
-Depends: R (>= 4.0)
-License: GPL-3
+Title: Cell Signalling Using Single-Cell RNA-seq or Proteomics Data
+Version: 1.99.1
+Authors@R: c(
+    person("Jacques","Colinge",email="jacques.colinge@inserm.fr",role="aut",comment = c(ORCID = "0000-0003-2466-4824")),
+    person("Jean-Philippe","Villemin",email="jpvillemin@gmail.com",role="cre",comment = c(ORCID = "0000-0002-1838-5880")))
+Description: Inference of ligand-receptor (L-R) interactions from single-cell
+    expression (transcriptomics/proteomics) data.
+    SingleCellSignalR v2 inferences rely on the statistical model we
+    introduced in the BulkSignalR package as well as the original
+    SingleCellSignalR LR-score (both are available).
+    SingleCellSignalR v2 can be regarded as a wrapper
+    to BulkSignalR fundamental classes. This also enables v2 users to work with
+    any species, whereas only Mus musculus & Homo sapiens were available before
+    in SingleCellSignalR v1.
+URL: https://github.com/jcolinge/SingleCellSignalR
+BugReports: https://github.com/jcolinge/SingleCellSignalR/issues
+License: CeCILL | file LICENSE
+Depends: R (>= 4.5)
 Encoding: UTF-8
-LazyData: true
+LazyData: FALSE
+biocViews: Network, RNASeq, Software, Proteomics, Transcriptomics ,SingleCell,  NetworkInference
 Imports:
-  BiocManager,
-  circlize,
-  limma,
-  igraph,
-  gplots,
-  grDevices,
-  edgeR,
-  data.table,
-  pheatmap,
-  stats,
-  Rtsne,
-  graphics,
-  stringr,
-  foreach,
-  multtest,
-  scran,
-  utils,
-RoxygenNote: 7.2.1
+    stats,
+    utils,
+    methods,
+    ggplot2,
+    matrixTests,
+    matrixStats,
+    foreach,
+    BulkSignalR
 Suggests: 
     knitr,
+    markdown,
     rmarkdown
+RoxygenNote: 7.3.2
 VignetteBuilder: knitr
-biocViews: SingleCell, Network, Clustering, RNASeq, Classification
