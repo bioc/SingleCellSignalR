@@ -888,7 +888,7 @@ setMethod("performInferences", "SCSRNet", function(obj,
                     if (is.null(bsrinf.comp)) {
                         if (verbose) {
                             message("  No interaction selected for ",
-                                    source.pop, "_vs_", target.pop)
+                                    source.pop, "_vs_", target.pop )
                         }
                     } else {
                         paracrines <- c(paracrines, list(bsrinf.comp))
