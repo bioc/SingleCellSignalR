@@ -850,7 +850,7 @@ setMethod("performInferences", "SCSRNet", function(obj,
             )
             if (is.null(bsrinf.comp)) {
                 if (verbose) {
-                    message("  No interaction selected for", pop)
+                    message("  No interaction selected for ", pop)
                 }
             } else {
                 autocrines <- c(autocrines, list(bsrinf.comp))
@@ -871,13 +871,12 @@ setMethod("performInferences", "SCSRNet", function(obj,
                 "_vs_others")]]
             for (target.pop in selected.populations) {
                 if (source.pop != target.pop) {
-                    # if (verbose)
-                    #   message("  from",source.pop,"to",target.pop)
                     bsrcc <- BulkSignalR::comparison(bsrdmComp(obj))[[
                         paste0(target.pop,
                         "_vs_others")]]
-                    bsrinf.comp <- BulkSignalR::updateInference(bsrinf.u, bsrcc,
-                        ncounts(bsrdmComp(obj)), src.bsrcc,
+                    bsrinf.comp <- BulkSignalR::updateInference(
+                        bsrinf.u, bsrcc,
+                        ncounts(bsrdmComp(obj)), src.bsrcc = src.bsrcc,
                         rank.p = rank.p, max.pval = max.pval,
                         min.logFC = min.logFC, min.LR.score = min.LR.score,
                         neg.receptors = neg.receptors,
@@ -888,13 +887,13 @@ setMethod("performInferences", "SCSRNet", function(obj,
                     )
                     if (is.null(bsrinf.comp)) {
                         if (verbose) {
-                            message("  No interaction selected for",
-                                source.pop, "_vs_", target.pop,)
+                            message("  No interaction selected for ",
+                                    source.pop, "_vs_", target.pop)
                         }
                     } else {
                         paracrines <- c(paracrines, list(bsrinf.comp))
                         names(paracrines)[length(paracrines)] <- paste0(
-                            source.pop, "_vs_", target.pop)
+                          source.pop, "_vs_", target.pop)
                     }
                 }
             }
