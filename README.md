@@ -56,8 +56,8 @@ develop specific applications such as single-cell analyses.
 ``` R 
 # Installation can go via GitHub:
 # install.packages("devtools")
-devtools::install_github("ZheFrench/BulkSignalR",build_vignettes = TRUE)
-devtools::install_github("ZheFrench/SingleCellSignalR",build_vignettes = TRUE)
+devtools::install_github("jcolinge/BulkSignalR",build_vignettes = TRUE)
+devtools::install_github("jcolinge/SingleCellSignalR",build_vignettes = TRUE)
 
 # or directly from Bioconductor
 if (!require("BiocManager", quietly = TRUE))
@@ -72,7 +72,7 @@ BiocManager::install("SingleCellSignalR")
 
 ## Notes
 
-For a version history/change logs, see the [NEWS file](https://github.com/ZheFrench/SingleCellSignalR/blob/master/NEWS).
+For a version history/change logs, see the [NEWS file](https://github.com/jcolinge/SingleCellSignalR/blob/master/NEWS).
 
 
 Version 1 of SingleCellSignalR (original version as published in NAR in 2020), is still available
@@ -82,7 +82,7 @@ from a branch of this repository names version_1.
 **SingleCellSignalR** has been successfully installed on Mac OS X, Linux, and Windows using R version 4.5.
 
 
-The code in this repository is published with the [CeCILL](https://github.com/ZheFrench/SingleCellSignalR/blob/master/LICENSE.md) License.
+The code in this repository is published with the [CeCILL](https://github.com/jcolinge/SingleCellSignalR/blob/master/LICENSE.md) License.
 
 
 <!-- badges: start -->
