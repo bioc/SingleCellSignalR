@@ -479,7 +479,13 @@ setMethod("autocrines<-", "SCSRNoNet", function(x, value) {
 #'   object.
 #' @param subsample.size  The number of cells to sample from a given
 #'   population to estimate differential expression significance.
+#'   If set to -1, then all the cells of each population are used thus
+#'   implying that the same observation from pairs of populations harboring
+#'   different sizes will result in potentially very different P-values.
 #' @param n.resample  The number of times the sampling is performed.
+#' @param check.pval.se  A logical indicating that an estimate of the standard
+#'   error on the differential expression P-value must be computed, and
+#'   the conservative estimate P-value + SE must replace the P-value estimate.
 #' @param max.pval        The maximum P-value imposed to both the ligand
 #'   and the receptor.
 #' @param min.logFC       The minimum log2 fold-change allowed for
@@ -554,8 +560,8 @@ setMethod("performInferences", "SCSRNoNet", function(obj,
     autocrine = TRUE, paracrine = TRUE,
     selected.populations = NULL,
     funDiffExpr = NULL, subsample.size = 50,
-    n.resample = 10,
-    max.pval = 0.01, min.logFC = 1,
+    n.resample = 50, check.pval.se = FALSE,
+    max.pval = 0.05, min.logFC = 1,
     min.LR.score = 0, neg.receptors = FALSE,
     restrict.genes = NULL,
     fdr.proc = c(
@@ -577,6 +583,12 @@ setMethod("performInferences", "SCSRNoNet", function(obj,
     }
     if (!autocrine && !paracrine) {
         stop("One of paracrine or autocrine must be TRUE at least")
+    }
+    if (n.resample < 1){
+        stop("n.resample must be > 0")
+    }
+    if ((subsample.size < 1) && (subsample.size != -1)){
+        stop("subsample.size must be > 0 or equal to -1")
     }
     
     # store inference parameters
@@ -609,18 +621,35 @@ setMethod("performInferences", "SCSRNoNet", function(obj,
         } else {
             A <- which(populations(obj) == pop)
             B <- which(populations(obj) != pop)
-            d <- foreach::foreach(k = seq_len(n.resample),
-                .combine = cbind) %do% {
-                Ap <- sample(A, subsample.size, replace = TRUE)
-                Bp <- sample(B, subsample.size, replace = TRUE)
-                matrixTests::row_wilcoxon_twosample(
-                    ncounts(bsrdmComp(obj))[, Ap],
-                    ncounts(bsrdmComp(obj))[, Bp]
+            if (subsample.size != -1){
+                # resampling at subsample.size size
+                d <- foreach::foreach(k = seq_len(n.resample),
+                    .combine = cbind) %do% {
+                    Ap <- sample(A, subsample.size, replace = TRUE)
+                    Bp <- sample(B, subsample.size, replace = TRUE)
+                    matrixTests::row_wilcoxon_twosample(
+                        ncounts(bsrdmComp(obj))[, Ap],
+                        ncounts(bsrdmComp(obj))[, Bp]
+                    )$pvalue
+                }
+                diff <- apply(d, 1, stats::median, na.rm = TRUE)
+                # NA typically caused ball all the values being equal
+                diff[is.na(diff)] <- 1
+
+                if (check.pval.se){
+                    diff.se <- apply(d, 1, stats::mad, na.rm = TRUE)
+                    diff.se[is.na(diff.se)] <- 1
+                    diff <- diff + diff.se
+                }
+            }
+            else{
+                # no resampling, all the cells of each population are used
+                diff <- matrixTests::row_wilcoxon_twosample(
+                    ncounts(bsrdmComp(obj))[, A],
+                    ncounts(bsrdmComp(obj))[, B]
                 )$pvalue
             }
-            diff <- apply(d, 1, stats::median, na.rm = TRUE)
-            # typically caused ball all the values being equal
-            diff[is.na(diff)] <- 1
+            
             expr <- matrixStats::rowMeans2(ncounts(bsrdmComp(obj))[, A])
             if (logTransformed(bsrdmComp(obj))) {
                 logFC <- expr - matrixStats::rowMeans2(

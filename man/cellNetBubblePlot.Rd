@@ -2,7 +2,7 @@
 % Please edit documentation in R/visualization.R
 \name{cellNetBubblePlot}
 \alias{cellNetBubblePlot}
-\title{Overview of cellular networks}
+\title{Overview of cellular networks with a bubble plot}
 \usage{
 cellNetBubblePlot(
   obj,
@@ -37,10 +37,11 @@ or when the proportion of genes in \code{genes.to.count} is 0.}
 P-value.}
 }
 \value{
-A BSRDataModel object containing the smoothed ncounts.
+A bubble plot is displayed reflecting population pairwise
+interactions.
 }
 \description{
-Overview of cellular networks
+Overview of cellular networks with a bubble plot
 }
 \details{
 A matrix dot plot is generated to represent how much each pair of
@@ -63,6 +64,6 @@ last case, the color-code is based on -log10(P-values).
 \examples{
 print("cellNetBubblePlot")
 if (FALSE) {
-    cellBubblePlot(scsrcn)
+    cellNetBubblePlot(scsrcn)
 }
 }

@@ -13,9 +13,10 @@
   selected.populations = NULL,
   funDiffExpr = NULL,
   subsample.size = 50,
-  n.resample = 10,
+  n.resample = 50,
+  check.pval.se = FALSE,
   rank.p = 0.55,
-  max.pval = 0.01,
+  max.pval = 0.05,
   min.logFC = 1,
   min.LR.score = 0,
   neg.receptors = FALSE,
@@ -42,8 +43,9 @@
   selected.populations = NULL,
   funDiffExpr = NULL,
   subsample.size = 50,
-  n.resample = 10,
-  max.pval = 0.01,
+  n.resample = 50,
+  check.pval.se = FALSE,
+  max.pval = 0.05,
   min.logFC = 1,
   min.LR.score = 0,
   neg.receptors = FALSE,
@@ -73,9 +75,16 @@ and it must return a \code{\link[BulkSignalR]{BSRClusterComp-class}}
 object.}
 
 \item{subsample.size}{The number of cells to sample from a given
-population to estimate differential expression significance.}
+population to estimate differential expression significance.
+If set to -1, then all the cells of each population are used thus
+implying that the same observation from pairs of populations harboring
+different sizes will result in potentially very different P-values.}
 
 \item{n.resample}{The number of times the sampling is performed.}
+
+\item{check.pval.se}{A logical indicating that an estimate of the standard
+error on the differential expression P-value must be computed, and
+the conservative estimate P-value + SE must replace the P-value estimate.}
 
 \item{rank.p}{A number between 0 and 1 defining the rank of the last
 considered target genes (see BulkSignalR documentation).}
